@@ -1,6 +1,12 @@
 
 
-actualización del GPS: 
+Conexión del GPS: 
 
+    Interior: 
     1st: start = 4 fix /// end = 11 fix (37s 26ms)
     2nd: start = 5 fix /// end = 10 fix (18s 18ms)
+
+    Exterior:
+
+    1hz muy estable, buena medición comprobada con el coche.
+    Con accuracy de entre 2m y 8m
