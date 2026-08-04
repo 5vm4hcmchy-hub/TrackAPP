@@ -25,12 +25,21 @@
       console.log(startButton);
 
       function handleStart() {
-        watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
-          enableHighAccuracy: true,
-          maximumAge: 0,
-          timeout: 10000,
-        });
-        console.log("watchId:", watchId);
+        if (watchId === null) {
+          document.getElementById("start").textContent = "Stop";
+
+          watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 10000,
+          });
+          console.log("watchId:", watchId);
+        } else {
+          document.getElementById("start").textContent = "Start";
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+          console.log("watchId:", watchId);
+        }
       }
 
       function onSuccess(position) {
