@@ -2,9 +2,10 @@
 
 <html lang="en">
 
-<title><meta charset=""></title>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" >
     <title>TrackAPP</title>
 </head>
 
@@ -15,10 +16,10 @@
 
 <button id="start">Start</button>
 
-<p>Speed <span id="speed">--</span>Km/h</p>
+<p>Speed <span id="speed">--</span>km/h</p>
 <p>Accuracy <span id="accuracy">--</span>m</p>
 <p>Fixes <span id="fixes">--</span></p>
-<p>Updates <span id="updates">--</span></p>
+<p>Updates <span id="lastUpdate">--</span></p>
 
 <p>Error<span id="error">-----</span></p>
 
@@ -30,6 +31,7 @@
 
     function handleStart(){
         console.log('buttonClicked');
+        document.getElementById('error').textContent= " No Error"
     }
 
     startButton.addEventListener('click', handleStart);
