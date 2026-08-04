@@ -16,12 +16,12 @@
 
     <button id="start">Start</button>
 
-    <p>Speed <span id="speed">--</span>km/h</p>
-    <p>Accuracy <span id="accuracy">--</span>m</p>
-    <p>Fixes <span id="fixes">--</span></p>
-    <p>Updates <span id="lastUpdate">--</span></p>
+    <p>Speed <span id="speedDisplay">--</span>km/h</p>
+    <p>Accuracy <span id="accuracyDisplay">--</span>m</p>
+    <p>Fixes <span id="fixDisplay">--</span></p>
+    <p>Updates <span id="lastUpdateDisplay">--</span></p>
 
-    <p>Error<span id="error">-----</span></p>
+    <p>Error<span id="errorDisplay">-----</span></p>
 
     <script>
 
@@ -42,6 +42,10 @@
 
         function onSuccess(position) {
             console.log(position)
+            console.log('speed: ', position.cords.speed)
+            console.log('accuracy: ', position.cords.accuracy)
+            document.getElementById('speedDisplay').textContent = position.cords.speed
+            document.getElementById('accuracyDisplay').textContent = position.cords.accuracy
         }
 
         function onError(error) {
