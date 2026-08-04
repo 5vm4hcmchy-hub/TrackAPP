@@ -15,7 +15,7 @@
     <p>Fixes: <span id="fixDisplay">--</span></p>
     <p>Last Update: <span id="lastUpdateDisplay">--</span></p>
 
-    <p>Error: <span id="errorDisplay">-----</span></p>
+    <p>Error code: <span id="errorDisplay">-----</span></p>
 
     <script>
       let watchId = null;
@@ -52,7 +52,8 @@
       }
 
       function onError(error) {
-        console.log("GPS error");
+        console.log("GPS error, code: ", error.code);
+        document.getElementById("errorDisplay").textContent = error.code;
       }
 
       startButton.addEventListener("click", handleStart);
