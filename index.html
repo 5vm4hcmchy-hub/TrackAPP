@@ -44,6 +44,12 @@
             console.log(position)
             console.log('speed: ', position.coords.speed)
             console.log('accuracy: ', position.coords.accuracy)
+            
+            if (position.coords.speed===null){
+                document.getElementById('speedDisplay').textContent = '----'
+            }   else {
+                document.getElementById('speedDisplay').textContent = Math.round(position.coords.speed*3.6)
+            }
             document.getElementById('speedDisplay').textContent = Math.round(position.coords.speed)
             document.getElementById('accuracyDisplay').textContent = Math.round(position.coords.accuracy)
         }
