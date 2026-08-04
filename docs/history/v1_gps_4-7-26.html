@@ -1,0 +1,71 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TrackAPP</title>
+  </head>
+
+  <body>
+    <button id="start">Start</button>
+
+    <p>Speed: <span id="speedDisplay">--</span>km/h</p>
+    <p>Accuracy: <span id="accuracyDisplay">--</span>m</p>
+    <p>Fixes: <span id="fixDisplay">--</span></p>
+    <p>Last Update: <span id="lastUpdateDisplay">--</span></p>
+
+    <p>Error code: <span id="errorDisplay">-----</span></p>
+
+    <script>
+      let watchId = null;
+      let fixCount = 0;
+      const startButton = document.getElementById("start");
+
+      console.log(startButton);
+
+      function handleStart() {
+        if (watchId === null) {
+          document.getElementById("start").textContent = "Stop";
+
+          watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 10000,
+          });
+          console.log("watchId:", watchId);
+        } else {
+          document.getElementById("start").textContent = "Start";
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+          console.log("watchId:", watchId);
+        }
+      }
+
+      function onSuccess(position) {
+        if (position.coords.speed === null) {
+          document.getElementById("speedDisplay").textContent = "--";
+        } else {
+          document.getElementById("speedDisplay").textContent = Math.round(
+            position.coords.speed * 3.6,
+          );
+        }
+        document.getElementById("accuracyDisplay").textContent = Math.round(
+          position.coords.accuracy,
+        );
+
+        fixCount = fixCount + 1;
+        document.getElementById("fixDisplay").textContent = fixCount;
+        document.getElementById("lastUpdateDisplay").textContent =
+          new Date().toLocaleTimeString();
+      }
+
+      function onError(error) {
+        console.log("GPS error, code: ", error.code);
+        document.getElementById("errorDisplay").textContent = error.code;
+      }
+
+      startButton.addEventListener("click", handleStart);
+    </script>
+  </body>
+</html>
