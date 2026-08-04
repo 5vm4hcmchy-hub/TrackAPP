@@ -1,19 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
-
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TrackAPP</title>
-</head>
+  </head>
 
-
-
-
-<body>
-
+  <body>
     <button id="start">Start</button>
 
     <p>Speed: <span id="speedDisplay">--</span>km/h</p>
@@ -24,44 +18,44 @@
     <p>Error: <span id="errorDisplay">-----</span></p>
 
     <script>
+      let watchId = null;
+      let fixCount = 0;
+      const startButton = document.getElementById("start");
 
-        let watchId = null;
-        const startButton = document.getElementById('start');
+      console.log(startButton);
 
-        console.log(startButton);
+      function handleStart() {
+        watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 10000,
+        });
+        console.log("watchId:", watchId);
+      }
 
-        function handleStart() {
-
-            watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 10000
-            });
-            console.log('watchId:', watchId);
+      
+      function onSuccess(position) {
+        if (position.coords.speed === null) {
+          document.getElementById("speedDisplay").textContent = "--";
+        } else {
+          document.getElementById("speedDisplay").textContent = Math.round(
+            position.coords.speed * 3.6,
+          );
         }
+        document.getElementById("accuracyDisplay").textContent = Math.round(
+          position.coords.accuracy,
+        );
 
-        function onSuccess(position) {
-            console.log(position)
-            console.log('speed: ', position.coords.speed)
-            console.log('accuracy: ', position.coords.accuracy)
-            
-            if (position.coords.speed===null){
-                document.getElementById('speedDisplay').textContent = '----'
-            }   else {
-                document.getElementById('speedDisplay').textContent = Math.round(position.coords.speed*3.6)
-            }
-            document.getElementById('speedDisplay').textContent = Math.round(position.coords.speed)
-            document.getElementById('accuracyDisplay').textContent = Math.round(position.coords.accuracy)
-        }
+        fixCount = fixCount + 1;
+        document.getElementById("fixDisplay").textContent = fixCount;
 
-        function onError(error) {
-            console.log('GPS error')
-        }
+      }
 
-        startButton.addEventListener('click', handleStart);
+      function onError(error) {
+        console.log("GPS error");
+      }
 
+      startButton.addEventListener("click", handleStart);
     </script>
-</body>
-
-
+  </body>
 </html>
