@@ -44,8 +44,8 @@
             console.log(position)
             console.log('speed: ', position.coords.speed)
             console.log('accuracy: ', position.coords.accuracy)
-            document.getElementById('speedDisplay').textContent = position.coords.speed
-            document.getElementById('accuracyDisplay').textContent = position.coords.accuracy
+            document.getElementById('speedDisplay').textContent = Math.round(position.coords.speed)
+            document.getElementById('accuracyDisplay').textContent = Math.round(position.coords.accuracy)
         }
 
         function onError(error) {
