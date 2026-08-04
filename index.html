@@ -17,6 +17,8 @@
 
     <p>Error code: <span id="errorDisplay">-----</span></p>
 
+    <script src="libs/sql-wasm.js"></script>
+
     <script>
       let watchId = null;
       let fixCount = 0;
@@ -65,7 +67,37 @@
         document.getElementById("errorDisplay").textContent = error.code;
       }
 
+      let SQL = null;
+      let db = null;
+
+      async function initDatabase() {
+        SQL = await initSqlJs({
+          locateFile: function (file) {
+            return "libs/" + file;
+          },
+        });
+        db = new SQL.Database();
+
+        const schemaText = await loadSchema();
+
+        db.run(schemaText);
+
+        console.log(
+          db.exec("SELECT name FROM sqlite_master WHERE type='table';"),
+        );
+
+        const laps = db.exec("SELECT * FROM v_vuelta_delta;");
+        console.log(laps);
+      }
+
+      async function loadSchema() {
+        const response = await fetch("db/schema.sql");
+        const sqlText = await response.text();
+        return sqlText;
+      }
+
       startButton.addEventListener("click", handleStart);
+      initDatabase();
     </script>
   </body>
 </html>
