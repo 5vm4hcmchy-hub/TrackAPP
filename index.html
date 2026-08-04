@@ -18,86 +18,8 @@
     <p>Error code: <span id="errorDisplay">-----</span></p>
 
     <script src="libs/sql-wasm.js"></script>
-
-    <script>
-      let watchId = null;
-      let fixCount = 0;
-      const startButton = document.getElementById("start");
-
-      console.log(startButton);
-
-      function handleStart() {
-        if (watchId === null) {
-          document.getElementById("start").textContent = "Stop";
-
-          watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 10000,
-          });
-          console.log("watchId:", watchId);
-        } else {
-          document.getElementById("start").textContent = "Start";
-          navigator.geolocation.clearWatch(watchId);
-          watchId = null;
-          console.log("watchId:", watchId);
-        }
-      }
-
-      function onSuccess(position) {
-        if (position.coords.speed === null) {
-          document.getElementById("speedDisplay").textContent = "--";
-        } else {
-          document.getElementById("speedDisplay").textContent = Math.round(
-            position.coords.speed * 3.6,
-          );
-        }
-        document.getElementById("accuracyDisplay").textContent = Math.round(
-          position.coords.accuracy,
-        );
-
-        fixCount = fixCount + 1;
-        document.getElementById("fixDisplay").textContent = fixCount;
-        document.getElementById("lastUpdateDisplay").textContent =
-          new Date().toLocaleTimeString();
-      }
-
-      function onError(error) {
-        console.log("GPS error, code: ", error.code);
-        document.getElementById("errorDisplay").textContent = error.code;
-      }
-
-      let SQL = null;
-      let db = null;
-
-      async function initDatabase() {
-        SQL = await initSqlJs({
-          locateFile: function (file) {
-            return "libs/" + file;
-          },
-        });
-        db = new SQL.Database();
-
-        const schemaText = await loadSchema();
-
-        db.run(schemaText);
-
-        console.log(
-          db.exec("SELECT name FROM sqlite_master WHERE type='table';"),
-        );
-
-        const laps = db.exec("SELECT * FROM v_vuelta_delta;");
-        console.log(laps);
-      }
-
-      async function loadSchema() {
-        const response = await fetch("db/schema.sql");
-        const sqlText = await response.text();
-        return sqlText;
-      }
-
-      startButton.addEventListener("click", handleStart);
-      initDatabase();
-    </script>
+    <script src="js/gps.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
