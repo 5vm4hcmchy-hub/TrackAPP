@@ -10,3 +10,47 @@ Conexión del GPS:
 
     1hz muy estable, buena medición comprobada con el coche.
     Con accuracy de entre 2m y 8m
+
+
+
+
+    SESIÓN — [fecha]. Fase 2: validación de cadena y GPS.
+
+Objetivo: confirmar que el ciclo completo funciona (VS Code → commit → GitHub Pages → HTTPS → iPhone) y obtener datos reales del GPS en el dispositivo.
+
+Construido: página de prueba con botón arranque/parada y cinco indicadores en vivo: velocidad, precisión, contador de fixes, hora de última actualización y código de error. navigator.geolocation.watchPosition con enableHighAccuracy: true, maximumAge: 0, timeout: 10000.
+
+Entorno: Mac + iPhone por cable con Web Inspector de Safari. Extensiones de VS Code: Prettier, Live Server, Error Lens, Auto Rename Tag. Descartado Copilot deliberadamente (trazabilidad de autoría para el IA y porque impide aprender la sintaxis).
+
+Errores encontrados y resueltos:
+
+watchPosition colocado fuera de handleStart → se ejecutaba al cargar la página en vez de al pulsar. Detectado porque llegaban fixes sin haber pulsado nada.
+console.log('watchId:', onSuccess) → imprimía el código fuente de la función en lugar del identificador. Confusión entre pasar una función como valor y leer una variable.
+console.log('watchId:', position) → ReferenceError. position es parámetro de onSuccess y no existe fuera de esa función. Primer choque con el concepto de ámbito.
+Línea residual de una tarea anterior sobrescribiendo el resultado del if. Mostraba 0 km/h porque Math.round(null) devuelve 0. Distinción importante: "sin dato" ≠ "parado".
+if ((activeState = false)) → asignación en vez de comparación. La expresión devolvía false y el if entraba siempre en la misma rama; además impedía que la variable llegara a valer true.
+Elemento activeStateDisplay borrado del HTML pero aún referenciado en JS → TypeError: null is not an object. La excepción detenía la función completa y el botón dejaba de responder.
+
+Mediciones:
+
+Interior, prueba 1: 11 fixes en 36 s → 1 cada 3,3 s
+Interior, prueba 2: 10 fixes en 16 s → 1 cada 1,6 s
+Ráfaga inicial de 4-5 fixes al pulsar (búfer del navegador, no ritmo real)
+Exterior en coche: 1 Hz estable incluso con mala cobertura
+Pendiente de rellenar: precisión en metros de cada escenario, y contraste de velocidad GPS vs velocímetro del coche
+
+Decisiones de diseño:
+
+Estado del botón derivado de watchId en lugar de una variable booleana aparte, para evitar dos fuentes del mismo estado que puedan desincronizarse.
+Mostrar -- cuando speed es null, no 0.
+Guardar siempre en unidades del sensor (m/s) y convertir solo al mostrar.
+const para referencias fijas, let para valores que cambian, nunca var.
+
+Implicación para el cronómetro: a 1 Hz, la distancia entre fixes es de 14 m a 50 km/h, 42 m a 150 y 56 m a 200. Sin interpolación del instante de cruce, el error sería de hasta ±0,5 s por vuelta — inaceptable en un contexto donde se compite por décimas. Esto justifica el algoritmo de interpolación del módulo 4.6. Además, el intervalo observado no es constante, así que la interpolación debe apoyarse en position.timestamp de cada fix y no en un intervalo asumido.
+
+Pendiente:
+
+Precisión en metros en interior y exterior
+Contraste GPS vs velocímetro
+Entrevista con el cliente y criterios de éxito
+Módulo 4.2: SQLite en el navegador
