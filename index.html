@@ -33,7 +33,6 @@
         console.log("watchId:", watchId);
       }
 
-      
       function onSuccess(position) {
         if (position.coords.speed === null) {
           document.getElementById("speedDisplay").textContent = "--";
@@ -48,7 +47,8 @@
 
         fixCount = fixCount + 1;
         document.getElementById("fixDisplay").textContent = fixCount;
-
+        document.getElementById("lastUpdateDisplay").textContent =
+          new Date().toLocaleTimeString();
       }
 
       function onError(error) {

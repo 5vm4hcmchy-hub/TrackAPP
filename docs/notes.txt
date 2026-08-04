@@ -1,3 +1,6 @@
 
 
 actualización del GPS: 
+
+    1st: start = 4 fix /// end = 11 fix (37s 26ms)
+    2nd: start = 5 fix /// end = 10 fix (18s 18ms)
